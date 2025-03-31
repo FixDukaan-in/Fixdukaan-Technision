@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
   },
   selectedContainer: {
-    height: "20%",
+    height: "25%",
     backgroundColor: "#fd7e14",
     paddingVertical: 10,
     alignItems: "center",
