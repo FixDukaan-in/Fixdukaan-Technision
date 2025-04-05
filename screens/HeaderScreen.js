@@ -1,8 +1,6 @@
-
 import React, { useState } from "react";
 import { View, Text, Switch, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import BottomTabNavigator from "../components/bottomTabNavigator"; // Import bottom tabs
 
 const HeaderScreen = () => {
   const [isOnline, setIsOnline] = useState(false);
@@ -13,7 +11,7 @@ const HeaderScreen = () => {
       <View style={styles.header}>
         <View style={styles.infoContainer}>
           <Text style={styles.greeting}>Hi, BOSS</Text>
-          <Text style={styles.details}>14.30.3 | GCEBOD122421160 | 3577 | 0</Text>
+          {/* <Text style={styles.details}>14.30.3 | GCEBOD122421160 | 3577 | 0</Text> */}
         </View>
 
         {/* Toggle Switch and Bell Icon */}
@@ -28,27 +26,20 @@ const HeaderScreen = () => {
           <MaterialIcons name="notifications-none" size={24} color="#333" />
         </View>
       </View>
-
-      {/* Bottom Tab Navigator */}
-      <View style={styles.navigatorContainer}>
-        <BottomTabNavigator />
-      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    marginTop: '15'
+    backgroundColor: "#fd5e14",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 15,
-    backgroundColor: "#fff",
+    backgroundColor: "#fd7e14",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
@@ -72,9 +63,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     fontSize: 14,
     color: "#666",
-  },
-  navigatorContainer: {
-    flex: 1, // Ensure BottomTabNavigator takes full height
   },
 });
 

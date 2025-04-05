@@ -1,7 +1,16 @@
 import React, { useState } from "react";
-import { 
-  View, Text, TextInput, TouchableOpacity, StyleSheet, 
-  KeyboardAvoidingView, ScrollView, Platform, Image, Alert, Animated 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Image,
+  Alert,
+  Animated,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
@@ -55,7 +64,10 @@ export default function SignupScreen() {
   // Validation Function for additional form
   const validateAdditional = () => {
     if (!gender || !age || !ifscCode || !aadhaarImage || !userPhoto) {
-      Alert.alert("Error", "All additional fields, including Aadhaar image and user photo, are required.");
+      Alert.alert(
+        "Error",
+        "All additional fields, including Aadhaar image and user photo, are required."
+      );
       return false;
     }
     if (isNaN(age) || age < 1 || age > 120) {
@@ -109,7 +121,10 @@ export default function SignupScreen() {
   const handleAadhaarImageUpload = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission Denied", "Sorry, we need gallery permissions to upload your Aadhaar image.");
+      Alert.alert(
+        "Permission Denied",
+        "Sorry, we need gallery permissions to upload your Aadhaar image."
+      );
       return;
     }
 
@@ -129,7 +144,10 @@ export default function SignupScreen() {
   const handleUserPhotoUpload = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission Denied", "Sorry, we need gallery permissions to upload your photo.");
+      Alert.alert(
+        "Permission Denied",
+        "Sorry, we need gallery permissions to upload your photo."
+      );
       return;
     }
 
@@ -186,12 +204,12 @@ export default function SignupScreen() {
 
       if (response.ok) {
         Alert.alert("Success", "Account created successfully!", [
-          { 
-            text: "OK", 
+          {
+            text: "OK",
             onPress: () => {
               hidePopupWithAnimation(); // Close popup
               navigation.navigate("LoginScreen"); // Move to next screen
-            }
+            },
           },
         ]);
       } else {
@@ -204,13 +222,16 @@ export default function SignupScreen() {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === "ios" ? "padding" : "height"} 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.innerContainer}
       >
-        <Image source={require("../assets/images/user2.png")} style={styles.profileImage} />
-        <ScrollView 
-          contentContainerStyle={styles.scrollContainer} 
+        <Image
+          source={require("../assets/images/user2.png")}
+          style={styles.profileImage}
+        />
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
         >
           {/* Initial Form */}
@@ -218,169 +239,203 @@ export default function SignupScreen() {
           <Text style={styles.subtitle}>Create an account to get started!</Text>
 
           <Text style={styles.label}>Name</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Enter your name" 
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your name"
             placeholderTextColor="#999"
-            value={name} 
-            onChangeText={setName} 
+            value={name}
+            onChangeText={setName}
           />
 
           <Text style={styles.label}>Mobile Number</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Enter your mobile number" 
-            keyboardType="phone-pad" 
-            maxLength={10} 
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your mobile number"
+            keyboardType="phone-pad"
+            maxLength={10}
             placeholderTextColor="#999"
-            value={mobile} 
-            onChangeText={setMobile} 
+            value={mobile}
+            onChangeText={setMobile}
           />
 
           <Text style={styles.label}>Address</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Enter your address" 
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your address"
             placeholderTextColor="#999"
-            value={address} 
-            onChangeText={setAddress} 
+            value={address}
+            onChangeText={setAddress}
           />
 
           <Text style={styles.label}>Email (Optional)</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Enter your email" 
-            keyboardType="email-address" 
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your email"
+            keyboardType="email-address"
             placeholderTextColor="#999"
-            value={email} 
-            onChangeText={setEmail} 
+            value={email}
+            onChangeText={setEmail}
           />
 
           <Text style={styles.label}>Password</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Enter your password" 
-            secureTextEntry 
-            placeholderTextColor="#999" 
-            value={password} 
-            onChangeText={setPassword} 
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your password"
+            secureTextEntry
+            placeholderTextColor="#999"
+            value={password}
+            onChangeText={setPassword}
           />
 
           <Text style={styles.label}>Confirm Password</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Confirm your password" 
-            secureTextEntry 
-            placeholderTextColor="#999" 
-            value={confirmPassword} 
-            onChangeText={setConfirmPassword} 
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm your password"
+            secureTextEntry
+            placeholderTextColor="#999"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
           />
 
-          <TouchableOpacity style={styles.button} onPress={showPopupWithAnimation}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={showPopupWithAnimation}
+          >
             <Text style={styles.buttonText}>NEXT</Text>
           </TouchableOpacity>
 
           <Text style={styles.signupText}>
-            Already have an account? <Text style={styles.signupLink} onPress={() => navigation.navigate("LoginScreen")}>Sign In</Text>
+            Already have an account?{" "}
+            <Text
+              style={styles.signupLink}
+              onPress={() => navigation.navigate("LoginScreen")}
+            >
+              Sign In
+            </Text>
           </Text>
           <Text style={styles.signupText}>
-            Header screen? <Text style={styles.signupLink} onPress={() => navigation.navigate("HeaderScreen")}>Click</Text>
+            Header screen?{" "}
+            <Text
+              style={styles.signupLink}
+              onPress={() => navigation.navigate("HeaderScreen")}
+            >
+              Click
+            </Text>
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
 
       {/* Bottom Image */}
-      <Image source={require("../assets/images/img3.jpeg")} style={styles.bottomImage} />
+      <Image
+        source={require("../assets/images/img3.jpeg")}
+        style={styles.bottomImage}
+      />
 
       {/* Popup Form with ScrollView */}
       {showPopup && (
-        <Animated.View 
+        <Animated.View
           style={[
-            styles.popupContainer, 
-            { 
-              opacity: fadeAnim, 
-              transform: [{ translateY: slideAnim }] 
-            }
+            styles.popupContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
           ]}
         >
           <View style={styles.popup}>
-            <ScrollView 
-              contentContainerStyle={styles.popupScrollContainer} 
+            <ScrollView
+              contentContainerStyle={styles.popupScrollContainer}
               keyboardShouldPersistTaps="handled"
             >
               <Text style={styles.title}>Additional Details</Text>
               <Text style={styles.subtitle}>Please provide these details</Text>
 
               <Text style={styles.label}>Gender</Text>
-              <TextInput 
-                style={styles.input} 
-                placeholder="Enter your gender" 
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your gender"
                 placeholderTextColor="#999"
-                value={gender} 
-                onChangeText={setGender} 
+                value={gender}
+                onChangeText={setGender}
               />
 
               <Text style={styles.label}>Age</Text>
-              <TextInput 
-                style={styles.input} 
-                placeholder="Enter your age" 
-                keyboardType="numeric" 
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your age"
+                keyboardType="numeric"
                 placeholderTextColor="#999"
-                value={age} 
-                onChangeText={setAge} 
+                value={age}
+                onChangeText={setAge}
               />
 
               <Text style={styles.label}>IFSC Code</Text>
-              <TextInput 
-                style={styles.input} 
-                placeholder="Enter your bank IFSC code" 
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your bank IFSC code"
                 placeholderTextColor="#999"
-                value={ifscCode} 
-                onChangeText={setIfscCode} 
+                value={ifscCode}
+                onChangeText={setIfscCode}
               />
 
               {/* Aadhaar Image Upload */}
               <Text style={styles.label}>Aadhaar Card Image</Text>
               {!aadhaarImage ? (
-                <TouchableOpacity style={styles.imageBox} onPress={handleAadhaarImageUpload}>
+                <TouchableOpacity
+                  style={styles.imageBox}
+                  onPress={handleAadhaarImageUpload}
+                >
                   <Text style={styles.plusSign}>+</Text>
                 </TouchableOpacity>
               ) : (
-                <Image 
-                  source={{ uri: aadhaarImage.uri }} 
-                  style={styles.uploadedImage} 
+                <Image
+                  source={{ uri: aadhaarImage.uri }}
+                  style={styles.uploadedImage}
                 />
               )}
 
               {/* User Photo Upload */}
               <Text style={styles.label}>Your Photo</Text>
               {!userPhoto ? (
-                <TouchableOpacity style={styles.imageBox} onPress={handleUserPhotoUpload}>
+                <TouchableOpacity
+                  style={styles.imageBox}
+                  onPress={handleUserPhotoUpload}
+                >
                   <Text style={styles.plusSign}>+</Text>
                 </TouchableOpacity>
               ) : (
-                <Image 
-                  source={{ uri: userPhoto.uri }} 
-                  style={styles.uploadedImage} 
+                <Image
+                  source={{ uri: userPhoto.uri }}
+                  style={styles.uploadedImage}
                 />
               )}
 
               {/* Signup Button in Popup */}
-              <TouchableOpacity style={styles.button} onPress={handleFinalSignup}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleFinalSignup}
+              >
                 <Text style={styles.buttonText}>SIGN UP</Text>
               </TouchableOpacity>
 
               <Text style={styles.signupText}>
-                <Text style={styles.signupLink} onPress={hidePopupWithAnimation}>Close</Text>
+                <Text
+                  style={styles.signupLink}
+                  onPress={hidePopupWithAnimation}
+                >
+                  Close
+                </Text>
               </Text>
-               {/* Already have an account */}
-          <Text style={styles.signupText}>
-            Already have an account? <Text style={styles.signupLink} onPress={() => navigation.navigate("LoginScreen")}>Sign In</Text>
-          </Text>
-          
-         
-
-
+              {/* Already have an account */}
+              <Text style={styles.signupText}>
+                Already have an account?{" "}
+                <Text
+                  style={styles.signupLink}
+                  onPress={() => navigation.navigate("LoginScreen")}
+                >
+                  Sign In
+                </Text>
+              </Text>
             </ScrollView>
           </View>
         </Animated.View>
@@ -392,66 +447,103 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   innerContainer: { flex: 1, paddingHorizontal: 20 },
-  scrollContainer: { flexGrow: 1, justifyContent: "center", alignItems: "center", paddingBottom: 100 },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: 100,
+  },
   title: { fontSize: 32, fontWeight: "bold", color: "#000", marginBottom: 10 },
-  subtitle: { fontSize: 16, color: "#666", textAlign: "center", marginBottom: 10 },
-  label: { alignSelf: "flex-start", fontSize: 14, fontWeight: "bold", color: "#444", marginBottom: 5 },
-  input: { width: "100%", backgroundColor: "#fff", padding: 15, borderRadius: 10, marginBottom: 5, borderWidth: 1, borderColor: "#ddd" },
-  button: { width: "100%", backgroundColor: "#ff9b42", padding: 15, borderRadius: 25, alignItems: "center", marginTop: 10 },
+  subtitle: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  label: {
+    alignSelf: "flex-start",
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#444",
+    marginBottom: 5,
+  },
+  input: {
+    width: "100%",
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 5,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  button: {
+    width: "100%",
+    backgroundColor: "#ff9b42",
+    padding: 15,
+    borderRadius: 25,
+    alignItems: "center",
+    marginTop: 10,
+  },
   buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
   signupText: { marginTop: 15, color: "#666", textAlign: "center" },
   signupLink: { color: "#fd7e14", fontWeight: "bold" },
-  bottomImage: { 
-    position: "absolute", 
-    bottom: 0, 
-    width: "100%", 
-    height: 100, 
-    resizeMode: "cover", 
-    zIndex: 0 
+  bottomImage: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: 100,
+    resizeMode: "cover",
+    zIndex: 0,
   },
-  profileImage: { width: 150, height: 150, borderRadius: 40, alignSelf: "center", marginTop: 30 },
-  popupContainer: { 
-    position: "absolute", 
-    top: 0, 
-    left: 0, 
-    right: 0, 
-    bottom: 0, 
-    backgroundColor: "rgba(0,0,0,0.5)", 
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 40,
+    alignSelf: "center",
+    marginTop: 30,
+  },
+  popupContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "flex-end",
-    zIndex: 10 
+    zIndex: 10,
   },
-  popup: { 
-    backgroundColor: "#fff", 
-    paddingHorizontal: 20, 
-    borderTopLeftRadius: 20, 
-    borderTopRightRadius: 20, 
-    alignItems: "center", 
-    minHeight: "50%", 
-    maxHeight: "70%", 
+  popup: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: "center",
+    minHeight: "50%",
+    maxHeight: "70%",
   },
-  popupScrollContainer: { 
-    paddingVertical: 20, 
-    alignItems: "center", 
-    flexGrow: 1 
+  popupScrollContainer: {
+    paddingVertical: 20,
+    alignItems: "center",
+    flexGrow: 1,
   },
-  imageBox: { 
-    width: 100, 
-    height: 100, 
-    backgroundColor: "#ddd", 
-    borderRadius: 10, 
-    justifyContent: "center", 
-    alignItems: "center", 
-    marginBottom: 10 
+  imageBox: {
+    width: 100,
+    height: 100,
+    backgroundColor: "#ddd",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
   },
-  plusSign: { 
-    fontSize: 40, 
-    color: "#444", 
-    fontWeight: "bold" 
+  plusSign: {
+    fontSize: 40,
+    color: "#444",
+    fontWeight: "bold",
   },
-  uploadedImage: { 
-    width: 150, 
-    height: 100, 
-    borderRadius: 10, 
-    marginBottom: 10 
+  uploadedImage: {
+    width: 150,
+    height: 100,
+    borderRadius: 10,
+    marginBottom: 10,
   },
 });

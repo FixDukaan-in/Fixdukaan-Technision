@@ -1,8 +1,14 @@
-
 import React, { useState } from "react";
-import { 
-  View, Text, TextInput, TouchableOpacity, StyleSheet, 
-  KeyboardAvoidingView, ScrollView, Platform, Image 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -14,50 +20,48 @@ export default function OtpLoginScreen() {
   return (
     <View style={styles.container}>
       {/* Profile Image */}
-      <Image 
-        source={require("../assets/images/user2.png")}  
-        style={styles.profileImage} 
+      <Image
+        source={require("../assets/images/user2.png")}
+        style={styles.profileImage}
       />
-      
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === "ios" ? "padding" : "height"} 
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.innerContainer}
       >
-        <ScrollView 
-          contentContainerStyle={styles.scrollContainer} 
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
         >
           {/* Title */}
           <Text style={styles.title}>OTP Login</Text>
 
           {/* Subtitle */}
-          
+
           <Text style={styles.subtitle}>
             Enter your mobile number to receive an OTP
           </Text>
-         
-          
 
           {/* Mobile Number */}
           <Text style={styles.label}>Mobile Number</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Enter your mobile number" 
-            keyboardType="phone-pad" 
-            maxLength={10} 
-            placeholderTextColor="#999" 
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your mobile number"
+            keyboardType="phone-pad"
+            maxLength={10}
+            placeholderTextColor="#999"
             value={mobileNumber}
             onChangeText={setMobileNumber}
           />
 
           {/* OTP */}
           <Text style={styles.label}>OTP</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Enter OTP" 
-            keyboardType="number-pad" 
-            maxLength={6} 
-            placeholderTextColor="#999" 
+          <TextInput
+            style={styles.input}
+            placeholder="Enter OTP"
+            keyboardType="number-pad"
+            maxLength={6}
+            placeholderTextColor="#999"
             value={otp}
             onChangeText={setOtp}
           />
@@ -69,17 +73,22 @@ export default function OtpLoginScreen() {
 
           {/* Navigate to Login */}
           <Text style={styles.signupText}>
-            Go back to<Text style={styles.signupLink} onPress={() => navigation.navigate("LoginScreen")}>
-              {" "}Login
+            Go back to
+            <Text
+              style={styles.signupLink}
+              onPress={() => navigation.navigate("LoginScreen")}
+            >
+              {" "}
+              Login
             </Text>
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
 
       {/* Curved Bottom Image */}
-      <Image 
-        source={require("../assets/images/img3.jpeg")}  
-        style={styles.bottomImage} 
+      <Image
+        source={require("../assets/images/img3.jpeg")}
+        style={styles.bottomImage}
       />
     </View>
   );
@@ -108,7 +117,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
 
-    title: {
+  title: {
     fontSize: 32,
     fontWeight: "bold",
     color: "#000",
@@ -120,7 +129,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 50,
   },
- 
+
   label: {
     alignSelf: "flex-start",
     fontSize: 14,
@@ -159,8 +168,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: 100, 
+    height: 100,
     resizeMode: "cover",
   },
-  
 });
