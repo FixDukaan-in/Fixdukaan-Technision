@@ -1,55 +1,67 @@
-import React, { useState } from "react";
-import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import React, { useState, useContext } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import { ProductContext } from "../context/ProductContext";
+import { useNavigation } from "@react-navigation/native";
 
-// List of products with names and corresponding images
 const products = [
-  { id: 1, name: "Mobile phone / Tablet", image: require("../assets/images/phone.png") },
-  { id: 2, name: "Laptop / PC", image: require("../assets/images/lap.png") },
-  { id: 3, name: "A.C", image: require("../assets/images/AC.jpeg") },
-  { id: 4, name: "T.V", image: require("../assets/images/tv.png") },
-  { id: 5, name: "Fridge", image: require("../assets/images/fridg.png") },
-  { id: 6, name: "Microwave / Oven", image: require("../assets/images/microwave.png") },
-  { id: 7, name: "Geyser", image: require("../assets/images/geyser.png") },
-  { id: 8, name: "Heater", image: require("../assets/images/heater.png") },
-  { id: 9, name: "Washing machine", image: require("../assets/images/washing.png") },
-  { id: 10, name: "R.O", image: require("../assets/images/RO.png") },
-  { id: 11, name: "Induction", image: require("../assets/images/induction.png") },
+  { id: 1, name: "Mobile phone / Tablet" },
+  { id: 2, name: "Laptop / PC" },
+  { id: 3, name: "A.C" },
+  { id: 4, name: "T.V" },
+  { id: 5, name: "Fridge" },
+  { id: 6, name: "Microwave / Oven" },
+  { id: 7, name: "Geyser" },
+  { id: 8, name: "Heater" },
+  { id: 9, name: "Washing machine" },
+  { id: 10, name: "R.O" },
+  { id: 11, name: "Induction" },
 ];
 
-const numColumns = 2; // Number of columns in grid layout
-const cardWidth = Dimensions.get("window").width / numColumns - 20; // Calculate width for grid items
+const numColumns = 2;
+const cardWidth = Dimensions.get("window").width / numColumns - 24;
 
 const Products = () => {
-  const [selectedProducts, setSelectedProducts] = useState([]); // Store selected products
-  const [showProducts, setShowProducts] = useState(false); // Track whether to show product list
-  const [saved, setSaved] = useState(false); // Track if selections are saved
+  const [selectedProducts, setSelectedProductsLocal] = useState([]);
+  const [showProducts, setShowProducts] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  // Toggle selection for a product (add/remove from selected list)
+  const { setSelectedProducts } = useContext(ProductContext);
+  const navigation = useNavigation();
+
   const toggleSelection = (item) => {
-    setSelectedProducts((prevSelected) => {
+    setSelectedProductsLocal((prevSelected) => {
       if (prevSelected.find((p) => p.id === item.id)) {
-        return prevSelected.filter((p) => p.id !== item.id); // Remove if already selected
+        return prevSelected.filter((p) => p.id !== item.id);
       } else {
-        return [...prevSelected, item]; // Add to selection
+        return [...prevSelected, item];
       }
     });
   };
 
-  // Save selected products and prevent further selection
   const handleSave = () => {
     setSaved(true);
+    setSelectedProducts(selectedProducts);
+    navigation.navigate("Task");
   };
 
-  // Reset selection state to allow adding more products
   const handleAddMore = () => {
     setSaved(false);
   };
 
-  // Show "Add Products" button initially , before the user clicks on Add Products, the empty page will show this button only
   if (!showProducts) {
     return (
       <View style={styles.fullScreenContainer}>
-        <TouchableOpacity style={styles.addProductButton} onPress={() => setShowProducts(true)}>
+        <TouchableOpacity
+          style={styles.addProductButton}
+          onPress={() => setShowProducts(true)}
+        >
           <Text style={styles.addProductText}>Add Products</Text>
         </TouchableOpacity>
       </View>
@@ -58,25 +70,35 @@ const Products = () => {
 
   return (
     <View style={styles.container}>
-      {/* Upper half: Display selected products */}
-      <View style={styles.selectedContainer}>
-        <FlatList
-          data={selectedProducts}
-          keyExtractor={(item) => item.id.toString()}
-          horizontal
-          renderItem={({ item }) => (
-            <View style={styles.selectedCard}>
-              <Image source={item.image} style={styles.image} /> {/* Selected items are displayed normally */}
-              <Text style={styles.productText}>{item.name}</Text>
-            </View>
-          )}
-          ListEmptyComponent={() => (
-            <Text style={styles.emptyText}>No products selected yet</Text>
-          )}
-        />
+      {/* Header with title */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Select Your Products</Text>
+        {selectedProducts.length > 0 && (
+          <Text style={styles.selectedCount}>
+            {selectedProducts.length} selected
+          </Text>
+        )}
       </View>
 
-      {/* Bottom half: Product selection grid */}
+      {/* Selected products pill list */}
+      {selectedProducts.length > 0 && (
+        <View style={styles.selectedContainer}>
+          <FlatList
+            data={selectedProducts}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.selectedList}
+            renderItem={({ item }) => (
+              <View style={styles.selectedPill}>
+                <Text style={styles.selectedPillText}>{item.name}</Text>
+              </View>
+            )}
+          />
+        </View>
+      )}
+
+      {/* Product selection grid */}
       <FlatList
         data={products}
         keyExtractor={(item) => item.id.toString()}
@@ -84,29 +106,53 @@ const Products = () => {
         contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => {
           const isSelected = selectedProducts.some((p) => p.id === item.id);
-          const shouldBeGray = saved ? true : isSelected; // Grayscale effect when saved
           return (
-            <TouchableOpacity onPress={() => toggleSelection(item)}>
-              <View style={styles.card}>
-                <Image
-                  source={item.image}
-                  style={[styles.image, shouldBeGray && { tintColor: "gray" }]}
-                />
-                <Text style={styles.productText}>{item.name}</Text>
+            <TouchableOpacity
+              onPress={() => !saved && toggleSelection(item)}
+              disabled={saved}
+            >
+              <View
+                style={[
+                  styles.card,
+                  isSelected && styles.cardSelected,
+                  saved && styles.cardDisabled,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.productText,
+                    isSelected && styles.productTextSelected,
+                  ]}
+                >
+                  {item.name}
+                </Text>
+                {isSelected && <View style={styles.selectedIndicator} />}
               </View>
             </TouchableOpacity>
           );
         }}
       />
 
-      {/* Buttons: Save & Add More */}
+      {/* Action buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleSave}>
-          <Text style={styles.buttonText}>Save</Text>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            selectedProducts.length === 0 && styles.buttonDisabled,
+          ]}
+          onPress={handleSave}
+          disabled={selectedProducts.length === 0}
+        >
+          <Text style={styles.buttonText}>Save Selection</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleAddMore}>
-          <Text style={styles.buttonText}>Add More Products</Text>
-        </TouchableOpacity>
+        {saved && (
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={handleAddMore}
+          >
+            <Text style={styles.secondaryButtonText}>Add More Products</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -117,80 +163,135 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#ffffff",
   },
   addProductButton: {
-    paddingVertical: 20,
-    paddingHorizontal: 40,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
     backgroundColor: "#fd7e14",
-    borderRadius: 10,
+    borderRadius: 8,
+    elevation: 2,
   },
   addProductText: {
     color: "white",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#ffffff",
+  },
+  header: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#333",
+    textAlign: "center",
+  },
+  selectedCount: {
+    fontSize: 14,
+    color: "#fd7e14",
+    textAlign: "center",
+    marginTop: 4,
   },
   selectedContainer: {
-    height: "25%",
-    backgroundColor: "#fd7e14",
-    paddingVertical: 10,
-    alignItems: "center",
+    paddingVertical: 12,
+    backgroundColor: "#f8f9fa",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
   },
-  selectedCard: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 10,
-    marginHorizontal: 5,
-    alignItems: "center",
+  selectedList: {
+    paddingHorizontal: 16,
+  },
+  selectedPill: {
+    backgroundColor: "#fd7e14",
+    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginRight: 8,
+  },
+  selectedPillText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "500",
   },
   listContainer: {
-    paddingBottom: 20,
-    backgroundColor: "#fff",
+    padding: 12,
   },
   card: {
     width: cardWidth,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 15,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 8,
+    padding: 16,
+    margin: 6,
+    justifyContent: "center",
     alignItems: "center",
-    margin: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    height: 80,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
   },
-  image: {
-    width: 60,
-    height: 60,
-    resizeMode: "contain",
-    marginBottom: 10,
+  cardSelected: {
+    backgroundColor: "#fff5eb",
+    borderColor: "#fd7e14",
+  },
+  cardDisabled: {
+    opacity: 0.6,
   },
   productText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "500",
     color: "#333",
     textAlign: "center",
   },
+  productTextSelected: {
+    color: "#fd7e14",
+    fontWeight: "600",
+  },
+  selectedIndicator: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#fd7e14",
+  },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 10,
+    padding: 16,
+    backgroundColor: "#ffffff",
+    borderTopWidth: 1,
+    borderTopColor: "#e0e0e0",
   },
   button: {
     backgroundColor: "#fd7e14",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  buttonDisabled: {
+    backgroundColor: "#cccccc",
   },
   buttonText: {
     color: "white",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  secondaryButton: {
+    paddingVertical: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#fd7e14",
+  },
+  secondaryButtonText: {
+    color: "#fd7e14",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
   },
   emptyText: {
     fontSize: 16,

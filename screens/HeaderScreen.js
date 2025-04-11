@@ -19,7 +19,7 @@ const HeaderScreen = () => {
           <Switch
             value={isOnline}
             onValueChange={setIsOnline}
-            thumbColor={isOnline ? "#4CAF50" : "#ccc"}
+            thumbColor={isOnline ? "#4CAF50" : "#ffffff"}
             trackColor={{ false: "#ccc", true: "#4CAF50" }}
           />
           <Text style={styles.status}>{isOnline ? "ONLINE" : "OFFLINE"}</Text>
@@ -47,13 +47,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   greeting: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
+    color: "#ffffff",
   },
   details: {
-    fontSize: 14,
-    color: "#666",
+    fontSize: 16,
+    color: "#ffffff",
   },
   controls: {
     flexDirection: "row",
@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
   status: {
     marginHorizontal: 10,
     fontSize: 14,
-    color: "#666",
+    color: "#ffffff",
+    fontWeight: "bold",
   },
 });
 

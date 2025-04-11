@@ -144,7 +144,7 @@ const TaskDetailScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: "#fff5e6" },
+  container: { padding: 20, backgroundColor: "#ffffff" },
   card: {
     marginTop: 30,
     marginBottom: 15,

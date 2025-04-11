@@ -2,58 +2,54 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, Text, StyleSheet, ScrollView } from "react-native"; // Added ScrollView
+import { View, StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import Products from "./components/Product";
 import OrderHistory from "./components/OrderHistory";
 import Task from "./components/Task";
 import HeaderScreen from "./screens/HeaderScreen";
-import OrderDetailsScreen from "./screens/OrderDetailScreen"; // Import OrderDetailsScreen
-import TaskDetailScreen from "./screens/TaskDetailsScreen"; // Import TaskDetailScreen
+import OrderDetailsScreen from "./screens/OrderDetailScreen";
+import TaskDetailScreen from "./screens/TaskDetailsScreen";
 import Profile from "./components/Profile";
+
+import { ProductProvider } from "./context/ProductContext"; // 🆕 Wrapped here
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// 🛠 Wrap TaskScreen in Stack Navigator
+// Task Stack Navigator
 const TaskStack = () => (
   <Stack.Navigator>
     <Stack.Screen
       name="TaskMain"
       component={TaskScreen}
-      options={{ headerShown: false }} // Hide default header
+      options={{ headerShown: false }}
     />
     <Stack.Screen
       name="OrderDetails"
-      component={OrderDetailsScreen} // Use the imported OrderDetailsScreen
+      component={OrderDetailsScreen}
       options={{
         title: "Order Details",
-        headerStyle: {
-          backgroundColor: "#fd7e14", // Set header background color
-        },
-        headerTintColor: "#fff", // Optional: Set text/icon color to white for contrast
-        headerTitleStyle: {
-          fontWeight: "bold", // Optional: Style the title
-        },
+        headerStyle: { backgroundColor: "#ffffff" },
+        headerTintColor: "#fd7e14",
+        headerTitleStyle: { fontWeight: "bold" },
       }}
     />
     <Stack.Screen
       name="TaskDetailScreen"
-      component={TaskDetailScreen} // Use the imported TaskDetailScreen
+      component={TaskDetailScreen}
       options={{
         title: "Task Detail",
-        headerStyle: {
-          backgroundColor: "#fd7e14", // Set header background color
-        },
-        headerTintColor: "#fff", // Optional: Set text/icon color to white for contrast
-        headerTitleStyle: {
-          fontWeight: "bold", // Optional: Style the title
-        },
+        headerStyle: { backgroundColor: "#fd7e14" },
+        headerTintColor: "#fff",
+        headerTitleStyle: { fontWeight: "bold" },
       }}
     />
   </Stack.Navigator>
 );
 
-// 🏷 Wrap Each Screen with HeaderScreen and ScrollView
+// Each Screen with HeaderScreen
 const TaskScreen = () => (
   <View style={styles.container}>
     <HeaderScreen />
@@ -82,53 +78,59 @@ const ProfileScreen = () => (
   </View>
 );
 
+// Main App with ProductProvider
 export default function App() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
+    <ProductProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+              if (route.name === "Task") {
+                iconName = focused
+                  ? "clipboard-text"
+                  : "clipboard-text-outline";
+              } else if (route.name === "Products") {
+                iconName = focused
+                  ? "package-variant"
+                  : "package-variant-closed";
+              } else if (route.name === "Order History") {
+                iconName = "history";
+              } else if (route.name === "Profile") {
+                iconName = focused ? "account" : "account-outline";
+              }
 
-            if (route.name === "Task") {
-              iconName = focused ? "clipboard-text" : "clipboard-text-outline";
-            } else if (route.name === "Products") {
-              iconName = focused ? "package-variant" : "package-variant-closed";
-            } else if (route.name === "Order History") {
-              iconName = "history";
-            } else if (route.name === "Profile") {
-              iconName = focused ? "account" : "account-outline";
-            }
-
-            return (
-              <MaterialCommunityIcons
-                name={iconName}
-                size={size}
-                color={color}
-              />
-            );
-          },
-          tabBarActiveTintColor: "#000",
-          tabBarInactiveTintColor: "#575757",
-          tabBarStyle: {
-            backgroundColor: "#fd7e14",
-            borderTopWidth: 0.5,
-            borderTopColor: "#ddd",
-            height: 60,
-          },
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontWeight: "600",
-          },
-          headerShown: false,
-        })}
-      >
-        <Tab.Screen name="Task" component={TaskStack} />
-        <Tab.Screen name="Products" component={ProductsScreen} />
-        <Tab.Screen name="Order History" component={OrderHistoryScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+              return (
+                <MaterialCommunityIcons
+                  name={iconName}
+                  size={size}
+                  color={color}
+                />
+              );
+            },
+            tabBarActiveTintColor: "#fd7e14",
+            tabBarInactiveTintColor: "#575757",
+            tabBarStyle: {
+              backgroundColor: "#ffffff",
+              borderTopWidth: 0.5,
+              borderTopColor: "#ddd",
+              height: 60,
+            },
+            tabBarLabelStyle: {
+              fontSize: 12,
+              fontWeight: "600",
+            },
+            headerShown: false,
+          })}
+        >
+          <Tab.Screen name="Task" component={TaskStack} />
+          <Tab.Screen name="Products" component={ProductsScreen} />
+          <Tab.Screen name="Order History" component={OrderHistoryScreen} />
+          <Tab.Screen name="Profile" component={ProfileScreen} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </ProductProvider>
   );
 }
 
