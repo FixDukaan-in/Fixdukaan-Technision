@@ -13,64 +13,83 @@ export default function SignupScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  // Additional form fields
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("");
   const [ifscCode, setIfscCode] = useState("");
-  const [aadhaarImage, setAadhaarImage] = useState(null); // State for Aadhaar image
-  const [userPhoto, setUserPhoto] = useState(null); // State for user photo
+  const [aadhaarImage, setAadhaarImage] = useState(null);
+  const [userPhoto, setUserPhoto] = useState(null);
 
   const [showPopup, setShowPopup] = useState(false);
-  const [fadeAnim] = useState(new Animated.Value(0)); // Fade animation
-  const [slideAnim] = useState(new Animated.Value(300)); // Slide animation from bottom
+  const [fadeAnim] = useState(new Animated.Value(0));
+  const [slideAnim] = useState(new Animated.Value(300));
 
   const navigation = useNavigation();
 
+  // Log platform for debugging
+  console.log("Device Platform:", Platform.OS);
+
   // Validation Function for initial form
   const validateInitial = () => {
+    console.log("Validating initial form:", { name, mobile, address, email, password, confirmPassword });
     if (!name || !mobile || !address || !password || !confirmPassword) {
       Alert.alert("Error", "All fields except email are required.");
+      console.log("Validation failed: Missing required fields");
       return false;
     }
     if (mobile.length !== 10 || isNaN(mobile)) {
       Alert.alert("Error", "Mobile number must be 10 digits.");
+      console.log("Validation failed: Invalid mobile number");
       return false;
     }
     if (email && !/^\S+@\S+\.\S+$/.test(email)) {
       Alert.alert("Error", "Enter a valid email address.");
+      console.log("Validation failed: Invalid email");
       return false;
     }
     if (password.length < 6) {
       Alert.alert("Error", "Password must be at least 6 characters.");
+      console.log("Validation failed: Password too short");
       return false;
     }
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match.");
+      console.log("Validation failed: Passwords do not match");
       return false;
     }
+    console.log("Initial form validation passed");
     return true;
   };
 
   // Validation Function for additional form
   const validateAdditional = () => {
-    if (!gender || !age || !ifscCode || !aadhaarImage || !userPhoto) {
-      Alert.alert("Error", "All additional fields, including Aadhaar image and user photo, are required.");
+    console.log("Validating additional form:", { gender, age, ifscCode, aadhaarImage, userPhoto });
+    if (!gender || !age || !ifscCode) {
+      Alert.alert("Error", "Gender, age, and IFSC code are required.");
+      console.log("Validation failed: Missing required additional fields");
+      return false;
+    }
+    if (!["Male", "Female", "Other"].includes(gender)) {
+      Alert.alert("Error", "Gender must be Male, Female, or Other.");
+      console.log("Validation failed: Invalid gender");
       return false;
     }
     if (isNaN(age) || age < 1 || age > 120) {
       Alert.alert("Error", "Enter a valid age between 1 and 120.");
+      console.log("Validation failed: Invalid age");
       return false;
     }
     if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
       Alert.alert("Error", "Enter a valid IFSC code (e.g., SBIN0001234).");
+      console.log("Validation failed: Invalid IFSC code");
       return false;
     }
+    console.log("Additional form validation passed");
     return true;
   };
 
   // Show popup with animation
   const showPopupWithAnimation = () => {
+    console.log("Attempting to show popup");
     if (validateInitial()) {
       setShowPopup(true);
       Animated.parallel([
@@ -85,12 +104,15 @@ export default function SignupScreen() {
           friction: 7,
           useNativeDriver: true,
         }),
-      ]).start();
+      ]).start(() => console.log("Popup animation completed"));
+    } else {
+      console.log("Popup not shown due to validation failure");
     }
   };
 
   // Hide popup with animation
   const hidePopupWithAnimation = () => {
+    console.log("Hiding popup");
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -102,103 +124,159 @@ export default function SignupScreen() {
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start(() => setShowPopup(false));
+    ]).start(() => {
+      setShowPopup(false);
+      console.log("Popup hidden");
+    });
   };
 
   // Handle Aadhaar image upload
   const handleAadhaarImageUpload = async () => {
+    console.log("Requesting media library permissions for Aadhaar image");
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert("Permission Denied", "Sorry, we need gallery permissions to upload your Aadhaar image.");
+      console.log("Aadhaar image upload failed: Permission denied");
       return;
     }
 
+    console.log("Launching image picker for Aadhaar image");
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.7,
     });
 
     if (!result.canceled) {
+      console.log("Aadhaar image selected:", result.assets[0]);
       setAadhaarImage(result.assets[0]);
+    } else {
+      console.log("Aadhaar image picker canceled");
     }
   };
 
   // Handle user photo upload
   const handleUserPhotoUpload = async () => {
+    console.log("Requesting media library permissions for user photo");
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert("Permission Denied", "Sorry, we need gallery permissions to upload your photo.");
+      console.log("User photo upload failed: Permission denied");
       return;
     }
 
+    console.log("Launching image picker for user photo");
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], // Square aspect for profile photo
-      quality: 1,
+      aspect: [1, 1],
+      quality: 0.7,
     });
 
     if (!result.canceled) {
+      console.log("User photo selected:", result.assets[0]);
       setUserPhoto(result.assets[0]);
+    } else {
+      console.log("User photo picker canceled");
     }
   };
 
-  // Handle final signup with additional details and images
+  // Handle final signup with additional details and optional images
   const handleFinalSignup = async () => {
-    if (!validateAdditional()) return;
+    console.log("Starting final signup");
+    if (!validateAdditional()) {
+      console.log("Final signup aborted: Validation failed");
+      return;
+    }
 
     try {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("mobile", mobile);
       formData.append("address", address);
-      formData.append("email", email);
+      if (email) formData.append("email", email);
       formData.append("password", password);
       formData.append("gender", gender);
       formData.append("age", age);
       formData.append("ifscCode", ifscCode);
+      
       if (aadhaarImage) {
+        console.log("Adding aadhaarImage to FormData:", {
+          uri: aadhaarImage.uri,
+          type: aadhaarImage.mimeType || "image/jpeg",
+          name: aadhaarImage.fileName || `aadhaar_${Date.now()}.jpg`,
+        });
         formData.append("aadhaarImage", {
           uri: aadhaarImage.uri,
-          type: aadhaarImage.type || "image/jpeg",
-          name: aadhaarImage.fileName || "aadhaar.jpg",
+          type: aadhaarImage.mimeType || "image/jpeg",
+          name: aadhaarImage.fileName || `aadhaar_${Date.now()}.jpg`,
         });
       }
       if (userPhoto) {
+        console.log("Adding userPhoto to FormData:", {
+          uri: userPhoto.uri,
+          type: userPhoto.mimeType || "image/jpeg",
+          name: userPhoto.fileName || `photo_${Date.now()}.jpg`,
+        });
         formData.append("userPhoto", {
           uri: userPhoto.uri,
-          type: userPhoto.type || "image/jpeg",
-          name: userPhoto.fileName || "photo.jpg",
+          type: userPhoto.mimeType || "image/jpeg",
+          name: userPhoto.fileName || `photo_${Date.now()}.jpg`,
         });
       }
 
-      const response = await fetch("https://your-api-endpoint.com/signup", {
+      // Log FormData entries for debugging
+      const formDataEntries = [];
+      for (let [key, value] of formData.entries()) {
+        formDataEntries.push({ key, value });
+      }
+      console.log("FormData Entries:", JSON.stringify(formDataEntries, null, 2));
+
+      // Log request details
+      const requestUrl = "http://192.168.1.8:8000/auth/signup";
+      console.log("Sending request to:", requestUrl);
+      console.log("Request Method: POST");
+
+      const response = await fetch(requestUrl, {
         method: "POST",
         body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
       });
 
+      console.log("Response Status:", response.status);
+      console.log("Response Headers:", JSON.stringify([...response.headers], null, 2));
+
       const data = await response.json();
+      console.log("Response Data:", JSON.stringify(data, null, 2));
 
       if (response.ok) {
+        console.log("Signup successful");
         Alert.alert("Success", "Account created successfully!", [
           { 
             text: "OK", 
             onPress: () => {
-              hidePopupWithAnimation(); // Close popup
-              navigation.navigate("LoginScreen"); // Move to next screen
+              console.log("Navigating to LoginScreen");
+              hidePopupWithAnimation();
+              navigation.navigate("LoginScreen");
             }
           },
         ]);
       } else {
-        Alert.alert("Error", data.message || "Something went wrong.");
+        console.log("Server Error Response:", data);
+        if (data.errors) {
+          const errorMessages = data.errors.map(err => err.msg).join("\n");
+          Alert.alert("Validation Error", errorMessages);
+        } else {
+          Alert.alert("Error", data.error || "Something went wrong.");
+        }
       }
     } catch (error) {
-      Alert.alert("Error", "Network error. Please check your connection.");
+      console.error("Network Error:", {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+      });
+      Alert.alert("Error", `Network error: ${error.message}`);
     }
   };
 
@@ -213,7 +291,6 @@ export default function SignupScreen() {
           contentContainerStyle={styles.scrollContainer} 
           keyboardShouldPersistTaps="handled"
         >
-          {/* Initial Form */}
           <Text style={styles.title}>Sign Up</Text>
           <Text style={styles.subtitle}>Create an account to get started!</Text>
 
@@ -228,7 +305,7 @@ export default function SignupScreen() {
 
           <Text style={styles.label}>Mobile Number</Text>
           <TextInput 
-            style={styles.input} 
+            style={styles.input}
             placeholder="Enter your mobile number" 
             keyboardType="phone-pad" 
             maxLength={10} 
@@ -289,10 +366,8 @@ export default function SignupScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {/* Bottom Image */}
       <Image source={require("../assets/images/img3.jpeg")} style={styles.bottomImage} />
 
-      {/* Popup Form with ScrollView */}
       {showPopup && (
         <Animated.View 
           style={[
@@ -314,7 +389,7 @@ export default function SignupScreen() {
               <Text style={styles.label}>Gender</Text>
               <TextInput 
                 style={styles.input} 
-                placeholder="Enter your gender" 
+                placeholder="Male, Female, or Other" 
                 placeholderTextColor="#999"
                 value={gender} 
                 onChangeText={setGender} 
@@ -339,8 +414,7 @@ export default function SignupScreen() {
                 onChangeText={setIfscCode} 
               />
 
-              {/* Aadhaar Image Upload */}
-              <Text style={styles.label}>Aadhaar Card Image</Text>
+              <Text style={styles.label}>Aadhaar Card Image (Optional)</Text>
               {!aadhaarImage ? (
                 <TouchableOpacity style={styles.imageBox} onPress={handleAadhaarImageUpload}>
                   <Text style={styles.plusSign}>+</Text>
@@ -352,8 +426,7 @@ export default function SignupScreen() {
                 />
               )}
 
-              {/* User Photo Upload */}
-              <Text style={styles.label}>Your Photo</Text>
+              <Text style={styles.label}>Your Photo (Optional)</Text>
               {!userPhoto ? (
                 <TouchableOpacity style={styles.imageBox} onPress={handleUserPhotoUpload}>
                   <Text style={styles.plusSign}>+</Text>
@@ -365,7 +438,6 @@ export default function SignupScreen() {
                 />
               )}
 
-              {/* Signup Button in Popup */}
               <TouchableOpacity style={styles.button} onPress={handleFinalSignup}>
                 <Text style={styles.buttonText}>SIGN UP</Text>
               </TouchableOpacity>
@@ -373,14 +445,9 @@ export default function SignupScreen() {
               <Text style={styles.signupText}>
                 <Text style={styles.signupLink} onPress={hidePopupWithAnimation}>Close</Text>
               </Text>
-               {/* Already have an account */}
-          <Text style={styles.signupText}>
-            Already have an account? <Text style={styles.signupLink} onPress={() => navigation.navigate("LoginScreen")}>Sign In</Text>
-          </Text>
-          
-         
-
-
+              <Text style={styles.signupText}>
+                Already have an account? <Text style={styles.signupLink} onPress={() => navigation.navigate("LoginScreen")}>Sign In</Text>
+              </Text>
             </ScrollView>
           </View>
         </Animated.View>
